@@ -2,118 +2,108 @@
 <html lang="ar">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Face Analyzer - ثيم أبيض/أسود</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Face Analyzer — Front + Side</title>
   <style>
-    :root{--bg:#0b0b0c;--card:#0f0f11;--accent:#ffffff;--muted:#9aa0a6;--blue:#2e8cff}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial;direction:rtl}
-    body{background:linear-gradient(180deg,var(--bg),#050506);color:var(--accent);display:flex;align-items:center;justify-content:center;padding:18px}
-
-    /* Phone-sized container (vertical) */
-    .phone{width:380px;max-width:95vw;height:820px;background:linear-gradient(180deg,var(--card),#0b0b0d);border-radius:28px;padding:14px;box-shadow:0 20px 60px rgba(0,0,0,0.6);display:flex;flex-direction:column;gap:12px}
-
+    :root{--bg:#050506;--card:#0f1113;--muted:#9aa0a6;--accent:#fff;--blue:#2e8cff}
+    html,body{height:100%;margin:0;font-family:system-ui,Arial;direction:rtl;background:linear-gradient(180deg,#030303,#0b0b0c);color:var(--accent);display:flex;align-items:center;justify-content:center;padding:16px}
+    .phone{width:390px;height:820px;border-radius:28px;background:linear-gradient(180deg,var(--card),#08080a);padding:14px;box-shadow:0 30px 60px rgba(0,0,0,0.6);display:flex;flex-direction:column;gap:12px}
     header{display:flex;justify-content:space-between;align-items:center}
     h1{margin:0;font-size:18px}
-    .lang-select{display:flex;gap:8px}
-    .btn{background:transparent;border:1px solid var(--muted);color:var(--accent);padding:8px 12px;border-radius:10px;cursor:pointer;font-size:13px}
+    .lang{display:flex;gap:8px}
+    .btn{padding:8px 12px;border-radius:10px;border:1px solid #222;background:transparent;color:var(--accent);cursor:pointer;font-size:13px}
     .btn.primary{background:var(--accent);color:#000;border:0}
-    .btn.ghost{background:transparent;border:1px dashed #222}
-
-    .camera-area{background:#050506;border-radius:14px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:8px}
-    video{width:100%;height:360px;border-radius:10px;object-fit:cover;background:#000}
-    .small-canvas{width:120px;height:160px;border-radius:10px;background:#000;object-fit:cover}
-
-    .steps{display:flex;gap:8px;justify-content:center}
-    .step{padding:6px 8px;border-radius:8px;background:#0a0a0b;color:var(--muted);font-size:13px}
+    .camera{background:#060607;border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:8px;align-items:center}
+    video{width:100%;height:360px;border-radius:10px;background:#000;object-fit:cover}
+    .thumbs{display:flex;gap:8px;justify-content:center}
+    .thumb{width:120px;height:160px;border-radius:8px;background:#050506;object-fit:cover}
+    .steps{display:flex;gap:6px;justify-content:center}
+    .step{padding:6px 8px;border-radius:8px;background:#0a0a0b;color:var(--muted);font-size:12px}
     .step.active{background:linear-gradient(180deg,var(--blue),#0048c9);color:#fff}
-
-    .metrics-panel{display:flex;flex-direction:column;gap:10px}
-    .metrics-row{display:flex;gap:8px}
-    .metric{flex:1;background:#080809;padding:8px;border-radius:10px;text-align:center}
-    .metric b{display:block;font-size:16px}
-    .big-score{display:flex;align-items:center;gap:12px}
-
-    /* 3D blue bar (pseudo 3D pillar) */
-    .pillar{width:48px;height:140px;background:linear-gradient(180deg,var(--blue),#005edc);border-radius:8px;position:relative;transform:skewX(-10deg);box-shadow:0 10px 30px rgba(46,140,255,0.18)}
-    .pillar::after{content:'';position:absolute;right:-12px;top:6px;width:12px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,0.08),rgba(0,0,0,0.18));transform:skewY(-20deg);border-top-right-radius:8px;border-bottom-right-radius:8px}
-    .pillar-inner{position:absolute;left:6px;bottom:6px;right:18px;background:rgba(255,255,255,0.12);border-radius:6px}
-    .pillar-label{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
-
-    .recs{background:#070708;padding:10px;border-radius:12px;height:140px;overflow:auto}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .metric{background:#070708;padding:8px;border-radius:8px;text-align:center}
+    .pillar-wrap{display:flex;align-items:end;gap:10px}
+    .pillar{width:48px;height:140px;background:linear-gradient(180deg,var(--blue),#005edc);border-radius:8px;position:relative;transform:skewX(-10deg);box-shadow:0 14px 30px rgba(46,140,255,0.14)}
+    .pillar::after{content:'';position:absolute;right:-12px;top:6px;width:12px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.18));transform:skewY(-20deg);border-top-right-radius:8px;border-bottom-right-radius:8px}
+    .pillar-inner{position:absolute;left:6px;bottom:6px;right:18px;background:rgba(255,255,255,0.08);border-radius:6px;height:40%}
+    .pillar-label{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+    .recs{background:#070708;padding:10px;border-radius:12px;height:130px;overflow:auto}
     .history{background:#070708;padding:10px;border-radius:12px;height:80px;overflow:auto}
-
     footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}
-
     .hidden{display:none}
-
   </style>
+  <!-- Mediapipe -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
   <div class="phone" id="app">
     <header>
       <div>
         <h1 id="title">Face Analyzer</h1>
-        <div id="subtitle" style="font-size:12px;color:var(--muted)">Capture front + side → get full analysis & routine</div>
+        <div id="sub" style="font-size:12px;color:var(--muted)">Capture front + side → full analysis</div>
       </div>
-      <div class="lang-select">
+      <div class="lang">
         <button class="btn" id="langAr">العربية</button>
         <button class="btn" id="langEn">English</button>
       </div>
     </header>
 
-    <div class="camera-area card">
+    <div class="camera" id="camArea">
       <div style="width:100%;display:flex;justify-content:space-between;align-items:center">
         <div class="steps">
-          <div class="step active" id="step1">1: Front</div>
-          <div class="step" id="step2">2: Side</div>
-          <div class="step" id="step3">3: Analyze</div>
+          <div class="step active" id="s1">1 Front</div>
+          <div class="step" id="s2">2 Side</div>
+          <div class="step" id="s3">3 Result</div>
         </div>
         <div style="display:flex;gap:8px">
-          <button class="btn" id="startCam">Start</button>
-          <button class="btn ghost" id="snapBtn">Capture</button>
+          <button class="btn" id="startBtn">Start</button>
+          <button class="btn" id="capBtn">Capture</button>
         </div>
       </div>
 
-      <video id="video" autoplay muted playsinline></video>
-      <canvas id="overlay" width="360" height="360" class="hidden"></canvas>
+      <video id="video" autoplay playsinline></video>
+      <canvas id="tmpCanvas" width="720" height="1280" class="hidden"></canvas>
 
-      <div style="display:flex;gap:8px;justify-content:center">
-        <img id="thumbFront" class="small-canvas" alt="front" src=""/>
-        <img id="thumbSide" class="small-canvas" alt="side" src=""/>
+      <div class="thumbs">
+        <img id="frontThumb" class="thumb" alt="front"/>
+        <img id="sideThumb" class="thumb" alt="side"/>
       </div>
-      <div style="font-size:12px;color:var(--muted);text-align:center">Make sure face is well lit. Capture front first, then rotate head 90° to capture side.</div>
+      <div style="font-size:12px;color:var(--muted);text-align:center">Capture front first, then turn head ~90° for side. Good lighting helps.</div>
     </div>
 
-    <div class="metrics-panel">
-      <div class="big-score">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
         <div style="display:flex;align-items:flex-end;gap:12px">
-          <div id="pillarWrap"><div class="pillar" id="pillar"><div class="pillar-inner" style="height:40%"></div></div><div class="pillar-label" id="pillarLabel">-- / 10</div></div>
-          <div>
-            <div style="font-size:13px;color:var(--muted)">Overall Score</div>
-            <div style="font-size:28px;font-weight:700" id="score">-- / 10</div>
-            <div style="color:var(--muted);font-size:12px" id="tier">--</div>
+          <div class="pillar-wrap">
+            <div style="text-align:center">
+              <div class="pillar" id="pillar"><div class="pillar-inner" id="pillarInner" style="height:40%"></div></div>
+              <div class="pillar-label" id="pillarLabel">-- / 10</div>
+            </div>
+            <div>
+              <div style="font-size:13px;color:var(--muted)">Overall Score</div>
+              <div style="font-size:26px;font-weight:700" id="score">-- / 10</div>
+              <div style="color:var(--muted);font-size:12px" id="tier">--</div>
+            </div>
           </div>
         </div>
 
-        <div style="margin-left:auto">
+        <div>
           <button class="btn primary" id="analyzeBtn">Analyze</button>
         </div>
       </div>
 
-      <div class="metrics-row">
+      <div style="margin-top:10px" class="metrics">
         <div class="metric"><div style="font-size:12px;color:var(--muted)">التناسق<br><b id="sym">--</b></div></div>
         <div class="metric"><div style="font-size:12px;color:var(--muted)">حدة الفك<br><b id="jaw">--</b></div></div>
-      </div>
-      <div class="metrics-row">
         <div class="metric"><div style="font-size:12px;color:var(--muted)">بروز الذقن<br><b id="chin">--</b></div></div>
         <div class="metric"><div style="font-size:12px;color:var(--muted)">شكل الأنف<br><b id="nose">--</b></div></div>
-      </div>
-      <div class="metrics-row">
         <div class="metric"><div style="font-size:12px;color:var(--muted)">العيون<br><b id="eyes">--</b></div></div>
         <div class="metric"><div style="font-size:12px;color:var(--muted)">البشرة<br><b id="skin">--</b></div></div>
       </div>
 
-      <div style="display:flex;gap:10px">
+      <div style="display:flex;gap:10px;margin-top:10px">
         <div style="flex:1">
           <h3 style="margin:6px 0">Recommendations</h3>
           <div class="recs" id="recs">No analysis yet</div>
@@ -126,181 +116,321 @@
     </div>
 
     <footer>
-      <div id="privacy" style="font-size:12px">يتم التحليل محليًا (ممكن تغير للـ on-device فقط)</div>
-      <div style="display:flex;gap:8px"><button class="btn" id="resetBtn">Reset</button></div>
+      <div id="privacy" style="font-size:12px;color:var(--muted)">Analysis runs on-device (MediaPipe)</div>
+      <div><button class="btn" id="resetBtn">Reset</button></div>
     </footer>
   </div>
 
-  <!-- libs -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script>
+  // Translations and UI setup
+  const T = {
+    ar: {title:'محلل الوجه', sub:'التقط صورة قدام وبعدين جنب للتحليل الكامل', s1:'1 أمامي', s2:'2 جنب', s3:'3 نتيجة', start:'ابدأ', cap:'التقط', analyze:'حلل', reset:'إعادة'},
+    en: {title:'Face Analyzer', sub:'Capture front + side for full analysis', s1:'1 Front', s2:'2 Side', s3:'3 Result', start:'Start', cap:'Capture', analyze:'Analyze', reset:'Reset'}
+  };
+  let lang = 'ar';
+  function setLang(l){
+    lang = l;
+    document.getElementById('title').innerText = T[l].title;
+    document.getElementById('sub').innerText = T[l].sub;
+    document.getElementById('s1').innerText = T[l].s1;
+    document.getElementById('s2').innerText = T[l].s2;
+    document.getElementById('s3').innerText = T[l].s3;
+    document.getElementById('startBtn').innerText = T[l].start;
+    document.getElementById('capBtn').innerText = T[l].cap;
+    document.getElementById('analyzeBtn').innerText = T[l].analyze;
+    document.getElementById('resetBtn').innerText = T[l].reset;
+  }
+  document.getElementById('langAr').addEventListener('click',()=>setLang('ar'));
+  document.getElementById('langEn').addEventListener('click',()=>setLang('en'));
+  setLang('ar');
 
-  <script>
-    // Translations
-    const T = {
-      ar: {
-        title:'محلل الوجه', subtitle:'التقط صورة من قدام وبعدين جنب عشان تحليل كامل', step1:'1: أمامي', step2:'2: جنب', step3:'3: تحليل', start:'ابدأ', snap:'التقط', analyze:'حلل', reset:'اعادة', privacy:'التحليل محليًا'} ,
-      en: {title:'Face Analyzer', subtitle:'Capture front + side for full analysis', step1:'1: Front', step2:'2: Side', step3:'3: Analyze', start:'Start', snap:'Capture', analyze:'Analyze', reset:'Reset', privacy:'On-device analysis'}
+  // MediaPipe FaceMesh instance (we'll use it programmatically per image)
+  const faceMesh = new window.FaceMesh({locateFile: (f)=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
+  faceMesh.setOptions({maxNumFaces:1,minDetectionConfidence:0.6,minTrackingConfidence:0.6});
+
+  // helper: run faceMesh on given Image element and return landmarks + imageData
+  function runFaceMeshOnImageElement(imgEl){
+    return new Promise((resolve)=>{
+      const tmpCanvas = document.createElement('canvas');
+      tmpCanvas.width = imgEl.naturalWidth || imgEl.width;
+      tmpCanvas.height = imgEl.naturalHeight || imgEl.height;
+      const tctx = tmpCanvas.getContext('2d');
+      tctx.drawImage(imgEl,0,0,tmpCanvas.width,tmpCanvas.height);
+      const imgData = tctx.getImageData(0,0,tmpCanvas.width,tmpCanvas.height);
+
+      // temporary results handler
+      const handler = (results)=>{
+        faceMesh.onResultsCallback = null;
+        if(results && results.multiFaceLandmarks && results.multiFaceLandmarks.length>0){
+          resolve({landmarks: results.multiFaceLandmarks[0], imageData: imgData});
+        } else {
+          resolve(null);
+        }
+      };
+      // set onResults and send
+      faceMesh.onResults((res)=>handler(res));
+      faceMesh.send({image: tmpCanvas}).catch(()=>{ faceMesh.onResults(()=>{}); resolve(null); });
+    });
+  }
+
+  // camera & capture logic
+  let video = document.getElementById('video');
+  let capturingStage = 1; // 1 front, 2 side
+  let frontDataUrl = null, sideDataUrl = null;
+  const tmpCanvas = document.getElementById('tmpCanvas');
+  const tctx = tmpCanvas.getContext('2d');
+
+  document.getElementById('startBtn').addEventListener('click', async ()=>{
+    // start camera
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({video:{width:720,height:1280},audio:false});
+        video.srcObject = stream;
+        await video.play();
+      }catch(e){
+        alert('Camera permission error or no camera available');
+      }
+    } else alert('No camera available');
+  });
+
+  document.getElementById('capBtn').addEventListener('click', ()=>{
+    if(!video.srcObject){ alert(lang==='ar'?'شغّل الكاميرا الأول':'Start camera first'); return; }
+    // draw current frame into tmpCanvas
+    tmpCanvas.width = video.videoWidth || 720;
+    tmpCanvas.height = video.videoHeight || 1280;
+    tctx.drawImage(video,0,0,tmpCanvas.width,tmpCanvas.height);
+    const dataUrl = tmpCanvas.toDataURL('image/jpeg',0.9);
+    if(capturingStage===1){
+      frontDataUrl = dataUrl;
+      document.getElementById('frontThumb').src = dataUrl;
+      capturingStage = 2;
+      document.getElementById('s1').classList.remove('active');
+      document.getElementById('s2').classList.add('active');
+      // instruct user to turn head — keep camera running for side capture
+      if(lang==='ar') alert('لف وشّك على جنب شويه علشان تصور الوجه من الجانب ثم اضغط Capture تاني');
+      else alert('Turn your head ~90° and press Capture again to take side photo');
+    } else if(capturingStage===2){
+      sideDataUrl = dataUrl;
+      document.getElementById('sideThumb').src = dataUrl;
+      capturingStage = 3;
+      document.getElementById('s2').classList.remove('active');
+      document.getElementById('s3').classList.add('active');
+      if(lang==='ar') alert('اتصورنا الاتنين — اضغط Analyze'); else alert('Both photos captured — press Analyze');
+    }
+  });
+
+  // utilities: compute metrics from landmarks (normalized coords), similar heuristics as earlier
+  function clamp01(v){ return Math.max(0,Math.min(1,v)); }
+  function computeMetrics(landmarks, imageData){
+    if(!landmarks) return null;
+    // face centroid
+    let cx=0,cy=0;
+    for(const p of landmarks){ cx+=p.x; cy+=p.y; }
+    cx/=landmarks.length; cy/=landmarks.length;
+
+    // symmetry (simple pairs)
+    const pairs = [[33,263],[133,362],[61,291],[199,429]];
+    let symSum=0,cnt=0;
+    for(const pr of pairs){
+      const a = landmarks[pr[0]], b = landmarks[pr[1]];
+      if(a && b){
+        const da = Math.hypot(a.x-cx,a.y-cy);
+        const db = Math.hypot(b.x-cx,b.y-cy);
+        symSum += 1 - Math.abs(da-db)/Math.max(da,db,1e-6);
+        cnt++;
+      }
+    }
+    const symmetry = cnt? symSum/cnt : 0.5;
+
+    // jaw sharpness (angle at chin)
+    const li = landmarks[234], chin = landmarks[152], ri = landmarks[454];
+    let jawSharp = 0.5;
+    if(li && chin && ri){
+      const v1 = {x:li.x-chin.x,y:li.y-chin.y};
+      const v2 = {x:ri.x-chin.x,y:ri.y-chin.y};
+      const dot = v1.x*v2.x + v1.y*v2.y;
+      const mag = Math.hypot(v1.x,v1.y)*Math.hypot(v2.x,v2.y) + 1e-6;
+      const cosv = clamp01(dot/mag);
+      const ang = Math.acos(cosv);
+      // heuristic: smaller angle -> sharper jaw
+      jawSharp = 1 - ((ang - 0.6)/(1.6-0.6));
+    }
+
+    // chin projection (x-distance from midline)
+    let chinProj = 0.5;
+    if(chin){
+      chinProj = 1 - Math.abs(chin.x - cx)*2;
+    }
+
+    // nose profile proxy (length ratio)
+    const noseTop = landmarks[1], mouthTop = landmarks[13];
+    let noseScore = 0.6;
+    if(noseTop && mouthTop){
+      const len = Math.abs(noseTop.y - mouthTop.y);
+      const top = (landmarks[10]) ? Math.abs(landmarks[10].y - mouthTop.y) : 0.5;
+      const ratio = len/(top||0.5);
+      noseScore = 1 - clamp01(Math.abs(ratio - 0.18)*4);
+    }
+
+    // eyes proportion
+    let eyesScore = 0.6;
+    const le = landmarks[33], re = landmarks[263];
+    if(le && re){
+      const eyeDist = Math.hypot(le.x-re.x, le.y-re.y);
+      const cheekL = landmarks[234], cheekR = landmarks[454];
+      if(cheekL && cheekR){
+        const faceW = Math.hypot(cheekL.x-cheekR.x, cheekL.y-cheekR.y);
+        const ratio = eyeDist/faceW;
+        eyesScore = 1 - Math.abs(ratio - 0.27)*3;
+      }
+    }
+
+    // skin: estimate variance near nose region if we have imageData
+    let skinScore = 0.7;
+    try{
+      if(imageData && noseTop){
+        const w = imageData.width, h = imageData.height;
+        const nx = Math.round(noseTop.x * w), ny = Math.round(noseTop.y * h);
+        const box = Math.max(8, Math.round(Math.min(w,h)*0.02));
+        let mean=0,cnt2=0;
+        for(let yy=Math.max(0,ny-box); yy<Math.min(h,ny+box); yy++){
+          for(let xx=Math.max(0,nx-box); xx<Math.min(w,nx+box); xx++){
+            const idx = (yy*w + xx)*4;
+            const r = imageData.data[idx], g = imageData.data[idx+1], b = imageData.data[idx+2];
+            const lum = 0.299*r + 0.587*g + 0.114*b;
+            mean += lum; cnt2++;
+          }
+        }
+        mean /= Math.max(1,cnt2);
+        let varsum=0;
+        for(let yy=Math.max(0,ny-box); yy<Math.min(h,ny+box); yy++){
+          for(let xx=Math.max(0,nx-box); xx<Math.min(w,nx+box); xx++){
+            const idx = (yy*w + xx)*4;
+            const r = imageData.data[idx], g = imageData.data[idx+1], b = imageData.data[idx+2];
+            const lum = 0.299*r + 0.587*g + 0.114*b;
+            varsum += (lum-mean)*(lum-mean);
+          }
+        }
+        const variance = varsum/Math.max(1,cnt2);
+        skinScore = clamp01(1 - Math.min(3000,variance)/3000);
+      }
+    }catch(e){ /* ignore */ }
+
+    return {
+      symmetry: clamp01(symmetry),
+      jaw: clamp01(jawSharp),
+      chin: clamp01(chinProj),
+      nose: clamp01(noseScore),
+      eyes: clamp01(eyesScore),
+      skin: clamp01(skinScore)
     };
+  }
 
-    let lang = 'ar';
-    const setLang = (l)=>{
-      lang = l;
-      document.getElementById('title').innerText = T[l].title;
-      document.getElementById('subtitle').innerText = T[l].subtitle;
-      document.getElementById('step1').innerText = T[l].step1;
-      document.getElementById('step2').innerText = T[l].step2;
-      document.getElementById('step3').innerText = T[l].step3;
-      document.getElementById('startCam').innerText = T[l].start;
-      document.getElementById('snapBtn').innerText = T[l].snap;
-      document.getElementById('analyzeBtn').innerText = T[l].analyze;
-      document.getElementById('resetBtn').innerText = T[l].reset;
-      document.getElementById('privacy').innerText = T[l].privacy;
-    };
-    document.getElementById('langAr').addEventListener('click',()=>setLang('ar'));
-    document.getElementById('langEn').addEventListener('click',()=>setLang('en'));
-    setLang('ar');
+  // aggregate metrics with weights
+  function aggregateScore(m){
+    const w = {symmetry:0.25,jaw:0.25,chin:0.12,nose:0.12,eyes:0.16,skin:0.1};
+    let total=0, sum=0;
+    for(const k in w){ total += (m[k]||0)*w[k]; sum += w[k]; }
+    return total/sum; // 0..1
+  }
 
-    // MediaPipe setup
-    const video = document.getElementById('video');
-    const overlay = document.getElementById('overlay');
-    const ctx = overlay.getContext('2d');
-    let camera = null;
+  // mapping final numeric score (0..1) to tiers you gave
+  // thresholds chosen (adjustable):
+  // <0.30 -> Sub 5
+  // 0.30-0.45 -> LTN
+  // 0.45-0.60 -> MTN
+  // 0.60-0.75 -> HTN
+  // 0.75-0.90 -> ADAM
+  // >=0.90 -> TRUE ADAM
+  function mapToTier(score){
+    if(score < 0.30) return 'Sub 5';
+    if(score < 0.45) return 'LTN';
+    if(score < 0.60) return 'MTN';
+    if(score < 0.75) return 'HTN';
+    if(score < 0.90) return 'ADAM';
+    return 'TRUE ADAM';
+  }
 
-    const thumbFront = document.getElementById('thumbFront');
-    const thumbSide = document.getElementById('thumbSide');
-    const step1El = document.getElementById('step1');
-    const step2El = document.getElementById('step2');
-    const step3El = document.getElementById('step3');
+  // analyze both images
+  document.getElementById('analyzeBtn').addEventListener('click', async ()=>{
+    if(!frontDataUrl || !sideDataUrl){ alert(lang==='ar'?'محتاج صورتين: قدام و جنب':'Need both front and side photos'); return; }
+    // create image elements
+    const imgFront = new Image(); imgFront.src = frontDataUrl;
+    const imgSide = new Image(); imgSide.src = sideDataUrl;
+    await Promise.all([imgLoaded(imgFront), imgLoaded(imgSide)]);
+    // run faceMesh on both
+    document.getElementById('recs').innerHTML = (lang==='ar'?'جاري التحليل...' : 'Analyzing...');
+    const outFront = await runFaceMeshOnImageElement(imgFront);
+    const outSide = await runFaceMeshOnImageElement(imgSide);
+    if(!outFront || !outSide){ alert(lang==='ar'?'واحدة من الصور ما انكشف فيها الوش، حاول اضبط الإضاءة والزوايا':'Couldn\'t detect face in one of the photos. Try better lighting/angles'); document.getElementById('recs').innerText = 'No analysis'; return; }
 
-    let captureStage = 1; // 1 front, 2 side
-    let frontImage = null, sideImage = null;
-    let frontLandmarks = null, sideLandmarks = null;
-    let lastImageData = null;
+    const mFront = computeMetrics(outFront.landmarks, outFront.imageData);
+    const mSide = computeMetrics(outSide.landmarks, outSide.imageData);
+    // average metrics
+    const metrics = {};
+    for(const k of ['symmetry','jaw','chin','nose','eyes','skin']) metrics[k] = ((mFront[k]||0) + (mSide[k]||0))/2;
 
-    function setStep(n){
-      [step1El,step2El,step3El].forEach((el,i)=>{el.classList.toggle('active', i+1===n)});
-    }
+    // update UI numbers
+    document.getElementById('sym').innerText = Math.round(metrics.symmetry*100);
+    document.getElementById('jaw').innerText = Math.round(metrics.jaw*100);
+    document.getElementById('chin').innerText = Math.round(metrics.chin*100);
+    document.getElementById('nose').innerText = Math.round(metrics.nose*100);
+    document.getElementById('eyes').innerText = Math.round(metrics.eyes*100);
+    document.getElementById('skin').innerText = Math.round(metrics.skin*100);
 
-    document.getElementById('startCam').addEventListener('click',async ()=>{
-      if(camera) return;
-      const stream = await navigator.mediaDevices.getUserMedia({video:{width:720,height:1280},audio:false});
-      video.srcObject = stream; await video.play();
-      overlay.width = video.videoWidth; overlay.height = video.videoHeight;
+    const final = aggregateScore(metrics);
+    const score10 = Math.round(final*100)/10;
+    document.getElementById('score').innerText = score10 + ' / 10';
+    document.getElementById('pillarInner').style.height = Math.round(20 + final*80) + '%';
+    document.getElementById('pillarLabel').innerText = score10 + ' / 10';
 
-      camera = new Camera(video,{onFrame:async ()=>{await faceMesh.send({image:video});},width:720,height:1280});
-      camera.start();
-    });
+    const tier = mapToTier(final);
+    document.getElementById('tier').innerText = tier;
 
-    document.getElementById('snapBtn').addEventListener('click',()=>{
-      if(!video.srcObject){alert('Start camera first');return}
-      // draw current frame to canvas
-      overlay.width = video.videoWidth; overlay.height = video.videoHeight;
-      ctx.drawImage(video,0,0,overlay.width,overlay.height);
-      const dataUrl = overlay.toDataURL('image/jpeg');
-      if(captureStage===1){ frontImage = dataUrl; thumbFront.src = dataUrl; captureStage=2; setStep(2);} else if(captureStage===2){ sideImage = dataUrl; thumbSide.src = dataUrl; captureStage=3; setStep(3);} 
-    });
+    // recommendations (simple rules)
+    const recs = [];
+    if(metrics.jaw < 0.55) recs.push(lang==='ar'?'اشتغل تمارين رقبة ووضعية لتحسين تعريف الفك (3x أسبوعياً).':'Do neck posture & resistance work to define jaw (3x/week).');
+    if(metrics.chin < 0.5) recs.push(lang==='ar'?'خفض نسبة الدهون العامة بالدايت والكارديو لبيان الذقن.':'Reduce body fat via diet & cardio to reveal chin.');
+    if(metrics.skin < 0.6) recs.push(lang==='ar'?'ابدأ روتين بشرة: غسول لطيف + مرطب + واقي شمس يومي.':'Start skincare: gentle cleanser + moisturizer + daily SPF.');
+    if(metrics.symmetry < 0.6) recs.push(lang==='ar'?'جرب زوايا تصوير وتسريحات تخفّي أي عدم تماثل.':'Try photo angles & hairstyles to mask asymmetry.');
+    if(recs.length===0) recs.push(lang==='ar'?'شكل عام: تمام! حافظ على روتينك.':'Overall: good! keep your routine.');
+    document.getElementById('recs').innerHTML = recs.map(r=>'<div style="margin-bottom:6px">• '+r+'</div>').join('');
 
-    document.getElementById('resetBtn').addEventListener('click',()=>{
-      captureStage=1; frontImage=null; sideImage=null; frontLandmarks=null; sideLandmarks=null; thumbFront.src='';thumbSide.src=''; setStep(1); document.getElementById('recs').innerHTML='No analysis yet'; document.getElementById('score').innerText='-- / 10'; document.getElementById('pillarLabel').innerText='-- / 10'; document.getElementById('pillar').querySelector('.pillar-inner').style.height='40%';});
+    // save history local
+    const history = JSON.parse(localStorage.getItem('fa_history_v2')||'[]');
+    history.unshift({date:new Date().toLocaleString(),score:Math.round(final*100)/100,tier});
+    localStorage.setItem('fa_history_v2', JSON.stringify(history.slice(0,12)));
+    renderHistory();
+  });
 
-    // FaceMesh and onResults - we will run single-image analysis for captured images
-    const faceMesh = new window.FaceMesh({locateFile:(file)=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
-    faceMesh.setOptions({maxNumFaces:1,minDetectionConfidence:0.6,minTrackingConfidence:0.6});
+  function renderHistory(){
+    const h = JSON.parse(localStorage.getItem('fa_history_v2')||'[]');
+    const div = document.getElementById('history');
+    div.innerHTML = h.map(it=>`<div style="padding:6px;background:#060607;border-radius:8px;margin-bottom:6px;font-size:12px">${it.date} — <b>${it.score}</b> — ${it.tier}</div>`).join('') || '<div style="color:var(--muted)">No records</div>';
+  }
 
-    // helper functions (same logic as previous but adapted)
-    function clamp01(v){return Math.max(0,Math.min(1,v))}
-    function to100(v){return Math.round(clamp01(v)*100)}
+  function imgLoaded(img){ return new Promise((res)=>{ if(img.complete) res(); else img.onload = ()=>res(); }); }
 
-    function computeMetrics(landmarks, imageData){
-      if(!landmarks) return null;
-      let cx=0,cy=0; for(const p of landmarks){cx+=p.x;cy+=p.y} cx/=landmarks.length; cy/=landmarks.length;
-      // symmetry via simple pairs
-      const pairs = [[33,263],[133,362],[61,291],[199,429]];
-      let symSum=0,cnt=0; for(const pr of pairs){const a=landmarks[pr[0]]; const b=landmarks[pr[1]]; if(a&&b){const da=Math.hypot(a.x-cx,a.y-cy); const db=Math.hypot(b.x-cx,b.y-cy); symSum += 1 - Math.abs(da-db)/Math.max(da,db,1e-6); cnt++;}} const symmetry = cnt? symSum/cnt : 0.5;
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    frontDataUrl = sideDataUrl = null;
+    document.getElementById('frontThumb').src = '';
+    document.getElementById('sideThumb').src = '';
+    capturingStage = 1;
+    document.getElementById('s1').classList.add('active');
+    document.getElementById('s2').classList.remove('active');
+    document.getElementById('s3').classList.remove('active');
+    document.getElementById('recs').innerHTML = 'No analysis yet';
+    document.getElementById('score').innerText = '-- / 10';
+    document.getElementById('pillarInner').style.height = '40%';
+    document.getElementById('pillarLabel').innerText = '-- / 10';
+    document.getElementById('sym').innerText = '--'; document.getElementById('jaw').innerText='--';
+    document.getElementById('chin').innerText='--'; document.getElementById('nose').innerText='--';
+    document.getElementById('eyes').innerText='--'; document.getElementById('skin').innerText='--';
+  });
 
-      // jaw sharpness
-      const li = landmarks[234], chin = landmarks[152], ri = landmarks[454]; let jawSharp=0.5; if(li&&chin&&ri){const v1={x:li.x-chin.x,y:li.y-chin.y}; const v2={x:ri.x-chin.x,y:ri.y-chin.y}; const dot=v1.x*v2.x+v1.y*v2.y; const mag=Math.hypot(v1.x,v1.y)*Math.hypot(v2.x,v2.y)+1e-6; const ang=Math.acos(clamp01(dot/mag)); jawSharp=1-((ang-0.6)/(1.6-0.6));}
+  // init
+  renderHistory();
 
-      let chinProj=0.5; if(chin){ chinProj = 1 - Math.abs(chin.x - cx)*2; }
-      const noseTop = landmarks[1], mouthTop = landmarks[13]; let noseScore=0.6; if(noseTop&&mouthTop){const len = Math.abs(noseTop.y-mouthTop.y); const top = landmarks[10] ? Math.abs(landmarks[10].y-mouthTop.y) : 0.5; const ratio=len/(top||0.5); noseScore = 1 - clamp01(Math.abs(ratio - 0.18)*4);} 
-      let eyesScore=0.6; const le=landmarks[33], re=landmarks[263]; if(le&&re){const eyeDist=Math.hypot(le.x-re.x,le.y-re.y); const cheekL=landmarks[234], cheekR=landmarks[454]; if(cheekL&&cheekR){const faceW=Math.hypot(cheekL.x-cheekR.x,cheekL.y-cheekR.y); const ratio=eyeDist/faceW; eyesScore = 1 - Math.abs(ratio - 0.27)*3;}}
-
-      // skin: use imageData variance if available
-      let skinScore=0.7; try{ if(imageData && noseTop){ const w=imageData.width, h=imageData.height; const nx=Math.round(noseTop.x*w), ny=Math.round(noseTop.y*h); const box=18; let mean=0,cnt2=0; for(let yy=Math.max(0,ny-box);yy<Math.min(h,ny+box);yy++){ for(let xx=Math.max(0,nx-box);xx<Math.min(w,nx+box);xx++){ const idx=(yy*w+xx)*4; const r=imageData.data[idx], g=imageData.data[idx+1], b=imageData.data[idx+2]; const lum=0.299*r+0.587*g+0.114*b; mean+=lum; cnt2++;}} mean/=Math.max(1,cnt2); let varsum=0; for(let yy=Math.max(0,ny-box);yy<Math.min(h,ny+box);yy++){ for(let xx=Math.max(0,nx-box);xx<Math.min(w,nx+box);xx++){ const idx=(yy*w+xx)*4; const r=imageData.data[idx], g=imageData.data[idx+1], b=imageData.data[idx+2]; const lum=0.299*r+0.587*g+0.114*b; varsum += (lum-mean)*(lum-mean);}} const variance = varsum/Math.max(1,cnt2); skinScore = clamp01(1 - Math.min(2000,variance)/2000);} }catch(e){}
-
-      return {symmetry:clamp01(symmetry),jaw:clamp01(jawSharp),chin:clamp01(chinProj),nose:clamp01(noseScore),eyes:clamp01(eyesScore),skin:clamp01(skinScore)};
-    }
-
-    // run FaceMesh on an image element and return landmarks + imageData
-    async function analyzeImageElement(imgEl){
-      return new Promise(async (resolve)=>{
-        const tmpCanvas = document.createElement('canvas'); tmpCanvas.width = imgEl.naturalWidth || imgEl.width; tmpCanvas.height = imgEl.naturalHeight || imgEl.height; const tctx = tmpCanvas.getContext('2d'); tctx.drawImage(imgEl,0,0,tmpCanvas.width,tmpCanvas.height); const imageData = tctx.getImageData(0,0,tmpCanvas.width,tmpCanvas.height);
-        // run faceMesh on canvas image
-        const results = await faceMesh.send({image: tmpCanvas});
-        if(results && results.multiFaceLandmarks && results.multiFaceLandmarks.length>0){ resolve({landmarks:results.multiFaceLandmarks[0],imageData}); } else resolve(null);
-      });
-    }
-
-    // we need a way to feed base64 image to analyzeImageElement: construct Image
-    async function analyzeDataUrl(dataUrl){
-      return new Promise((res)=>{ const img=new Image(); img.onload = async ()=>{ const out = await analyzeImageElement(img); res(out); }; img.src = dataUrl; });
-    }
-
-    // on analyze click -> analyze both images and aggregate
-    document.getElementById('analyzeBtn').addEventListener('click',async ()=>{
-      if(!frontImage || !sideImage){ alert('Capture both front and side images first'); return; }
-      document.getElementById('recs').innerText = 'Analyzing...';
-      const front = await analyzeDataUrl(frontImage);
-      const side = await analyzeDataUrl(sideImage);
-      if(!front || !side){ alert('Could not detect face in one of the images. حاول تتأكد من الإضاءة وزاوية التصوير'); document.getElementById('recs').innerText='No analysis'; return; }
-      // compute metrics for both and average
-      const mFront = computeMetrics(front.landmarks, front.imageData);
-      const mSide = computeMetrics(side.landmarks, side.imageData);
-      const metrics = {};
-      for(const k of ['symmetry','jaw','chin','nose','eyes','skin']) metrics[k] = ((mFront[k]||0) + (mSide[k]||0))/2;
-      // update UI
-      document.getElementById('sym').innerText = to100(metrics.symmetry);
-      document.getElementById('jaw').innerText = to100(metrics.jaw);
-      document.getElementById('chin').innerText = to100(metrics.chin);
-      document.getElementById('nose').innerText = to100(metrics.nose);
-      document.getElementById('eyes').innerText = to100(metrics.eyes);
-      document.getElementById('skin').innerText = to100(metrics.skin);
-
-      const final = aggregateScore(metrics);
-      const score10 = Math.round(final*100)/10; document.getElementById('score').innerText = score10 + ' / 10';
-      let tier='sub-5'; if(score10<3) tier='sub-3'; else if(score10<5) tier='sub-5'; else if(score10<6.5) tier='5-6'; else if(score10<8) tier='7-8'; else tier='9-10'; document.getElementById('tier').innerText = tier;
-
-      // update pillar height (map 0..1 to 20%..100%)
-      const h = Math.round(20 + final*80);
-      document.querySelector('.pillar-inner').style.height = h + '%';
-      document.getElementById('pillarLabel').innerText = score10 + ' / 10';
-
-      // recommendations
-      const recs = [];
-      if(metrics.jaw < 0.55) recs.push((lang==='ar'?'شد حيلك في وضعية الرقبة واشتغل تمارين رقبة ومقاومة 3x/أسبوع':'Neck posture & resistance exercises 3x/week to define jaw.'));
-      if(metrics.chin < 0.5) recs.push((lang==='ar'?'خفف نسبة الدهون بالدايت وكارديو لبيان الذقن':'Reduce body fat via diet & cardio to reveal chin.'));
-      if(metrics.skin < 0.6) recs.push((lang==='ar'?'ابدأ روتين بشرة: غسول خفيف + مرطب + واقي شمس':'Start skincare: gentle cleanser + moisturizer + SPF.'));
-      if(metrics.symmetry < 0.6) recs.push((lang==='ar'?'حاول زوايا تصوير أحسن وجرب تسريحة تخفي عدم التماثل':'Try better photo angles & hairstyles to mask asymmetry.'));
-      if(recs.length===0) recs.push((lang==='ar'?'شكل عام: تمام! حافظ على روتينك':'Overall: good! keep your routine.'));
-      document.getElementById('recs').innerHTML = recs.map(r=>'<div style="margin-bottom:6px">• '+r+'</div>').join('');
-
-      // save history locally
-      const history = JSON.parse(localStorage.getItem('fa_history')||'[]'); history.unshift({date:new Date().toLocaleString(),score:Math.round(final*100)/100}); localStorage.setItem('fa_history',JSON.stringify(history.slice(0,12))); renderHistory();
-
-    });
-
-    function aggregateScore(m){ const w={symmetry:0.25,jaw:0.25,chin:0.12,nose:0.12,eyes:0.16,skin:0.1}; let total=0,sum=0; for(const k in w){ total += (m[k]||0)*w[k]; sum+=w[k]; } return total/sum; }
-
-    function renderHistory(){ const h = JSON.parse(localStorage.getItem('fa_history')||'[]'); const div = document.getElementById('history'); div.innerHTML = h.map(it=>`<div style="padding:6px;background:#060607;border-radius:8px;margin-bottom:6px;font-size:12px">${it.date} — <b>${it.score}/1</b></div>`).join('')||'<div style="color:var(--muted)">No records</div>' }
-
-    // initialize
-    renderHistory(); setStep(1);
-
-    // allow analyze on Enter (for quick testing)
-    window.addEventListener('keydown',(e)=>{ if(e.key==='Enter') document.getElementById('analyzeBtn').click(); });
-
-  </script>
+</script>
 </body>
 </html>
